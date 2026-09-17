@@ -1,0 +1,24 @@
+{
+  "singleQuote": false,
+  "trailingComma": "all",
+  "semi": false,
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "^next",
+    "^@next",
+    "^react",
+    "^@?react",
+    "^@?\\w",
+    "^@/",
+    "^\\.\\.(?!/?$)",
+    "^\\.\\./?$",
+    "^\\./(?=.*/)(?!/?$)",
+    "^\\.(?!/?$)",
+    "^\\./?$",
+    "^\\u0000",
+    ".*\\.css$",
+    ".*\\.scss$"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
+}

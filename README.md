@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ML Shop
 
-## Getting Started
+Online shop for handmade leather clutches. Built with Next.js (App Router) so product pages are server-rendered and searchable.
 
-First, run the development server:
+## Local development
 
 ```bash
+npm install
+npm run fonts:verify
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Home: [http://localhost:3000](http://localhost:3000)
+- Product landing: [http://localhost:3000/products/ml-daily-klatch](http://localhost:3000/products/ml-daily-klatch)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Docker
 
-## Learn More
+```bash
+docker compose up --build
+```
 
-To learn more about Next.js, take a look at the following resources:
+The image uses Next.js `standalone` output. Static assets (including fonts under `public/fonts/`) are copied into the container.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Set `NEXT_PUBLIC_SITE_URL` in `docker-compose.yml` (or your orchestrator) to the public URL in production.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Fonts
 
-## Deploy on Vercel
+UI sans (`font-gilroy`) loads from files in the repository:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Manrope** (bundled fallback): `public/fonts/manrope/*.woff2`
+- **Gilroy** (optional, licensed): drop `Gilroy-Regular.woff2` and `Gilroy-Medium.woff2` into `public/fonts/gilroy/`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+If Gilroy files are present, they take priority. Otherwise Manrope is used — not a system font from your machine.
+
+```bash
+npm run fonts:verify   # check files before build
+npm run fonts:sync     # refresh Manrope from @fontsource/manrope
+```
+
+## Scripts
+
+- `npm run dev` — development server
+- `npm run lint` — ESLint
+- `npm run format` / `npm run format:write` — Prettier
+- `npm run check-types` — TypeScript
+- `npm run build` — production build
+
+## Images
+
+Put static images in `public/images/`. Product shots for the Daily Klatch live in `public/images/products/ml-daily-klatch/` and are served at `/images/products/ml-daily-klatch/...`. Use `next/image` with those paths.
+
+## Design
+
+Visual source of truth for the landing: [`docs/design/ml-daily-landing-desktop.png`](docs/design/ml-daily-landing-desktop.png). Mockups stay in `docs/design/` (not `public/`). Designer file: [ML Daily Klatch (Figma)](https://www.figma.com/design/GpU9pIhsIUvGO5DFEyfYb9/ML?node-id=159-30&p=f).
+
+Write feature specs in `docs/specs/` before implementing cart, order, or billing.

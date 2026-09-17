@@ -21,6 +21,8 @@
 /build
 
 # misc
+.cursor/
+.tmp-design/
 .DS_Store
 *.pem
 
