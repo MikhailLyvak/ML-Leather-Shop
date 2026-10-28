@@ -1,0 +1,17 @@
+---
+description: ML brand, copy, and SEO source of truth
+alwaysApply: true
+---
+
+# ML brand & SEO
+
+Before changing layout, copy, routing, metadata, product pages, images, or SEO, read `docs/ML_PROJECT_CONTEXT.md`. For landing layout, also read `docs/design/ml-daily-landing-desktop.png`.
+
+Non-negotiables:
+
+- Premium, restrained storefront — SEO must not look like keyword stuffing.
+- Customer-facing copy defaults to Ukrainian; English only for brand/product names (ML, ML Daily).
+- Server Components by default; do not `"use client"` an entire page for one interactive island.
+- Do not invent unlocked facts (price, full wordmark, extra colors, key dock, shoulder strap).
+- Repo product/config wins over this doc if they conflict — flag the mismatch.
+- Landing composition matches `docs/design/ml-daily-landing-desktop.png`; do not invent extra sections.

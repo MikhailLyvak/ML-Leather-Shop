@@ -1,0 +1,24 @@
+---
+description: In-repo landing mockup is the visual source of truth
+alwaysApply: true
+---
+
+# Design source
+
+Before changing homepage/landing layout, section order, spacing, or hero composition, **read** `docs/design/ml-daily-landing-desktop.png`.
+
+That PNG is the visual source of truth for agents. Figma is the designer’s file; do not treat the Figma URL as something you can inspect.
+
+## Precedence
+
+1. Typed product/brand config in `src/lib/` — prices, SKUs, color IDs, wordmark.
+2. `docs/ML_PROJECT_CONTEXT.md` — copy, SEO, unlocked commercial facts.
+3. `docs/design/*.png` — layout, spacing, section order, visual hierarchy, control placement.
+
+If the mockup and config disagree on a commercial fact (price, strap cost, extra SKU), **config wins** — flag the mismatch; do not OCR numbers from the PNG.
+
+## Do not
+
+- Put mockups in `public/` — they are not customer-facing assets.
+- Invent extra landing sections beyond the PNG unless the feature spec is updated first.
+- Use the mockup as a served image (`next/image` / `/images/...`).

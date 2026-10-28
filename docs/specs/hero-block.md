@@ -48,7 +48,9 @@ Mockup: first viewport of [`docs/design/ml-daily-landing-desktop.png`](../design
 
 Hero photos and color-selector thumbnails are served as original PNGs (no Next.js recompression). The product photo is the native 1271×675 composition so Black / Brown / Cognac share the same canvas and rest on the same ground line. It is displayed at **85%** of the 10-column span (~1080×574), right-aligned on desktop so the pouch stays on the terrace. The product price is 48px / weight 500 / line-height 100% / cap-height trim, UI sans, cognac `#966849`.
 
-Mobile (~360 / ~390): stack — promise, price, CTA and product remain above the fold; swatches stay usable.
+Mobile (~360 / ~390, stacked layout below `lg`): one viewport. Copy, CTA, strap, product, and color control stay above the fold. Extra height becomes **top padding** — the stack is pinned to the bottom so short and tall phones keep the same ground line.
+
+Visual source for this composition: [`docs/design/ml-daily-landing-mobile.png`](../design/ml-daily-landing-mobile.png) (and the iPhone 13/14 hero frame).
 
 ## Layout
 
@@ -59,7 +61,14 @@ Desktop follows the mockup **12-column** layout inside a **1520px-max** shell, w
 - Copy (title, description, price, CTA, swatches, strap) starts at **column 3** and spans **4 columns** of the 1520 frame. Vertical rhythm matches the mockup: title, body, price + CTA on **one row** (do not wrap), then swatches, then the strap add-on.
 - Product photo is the native **1271×675** PNG (pouch on the right, optional rolled strap on the left). It sits in **columns 3–12** of the 1520 frame at **85%** of that 10-column width (~1080×574) at ≥1440px, right-aligned and pinned to the **bottom of the hero** so it rests on the terrace tiles. Below 1440px it is **72%** of that span (~15% smaller again) so the strap still fits. Copy overlays the empty left of that canvas; do not crop to the pouch.
 - Hero scene is `object-cover` with **center / bottom** at ≥1520px and on stacked/mobile layouts. On desktop below 1520px use **right / bottom** so extra width is cropped from the left (column / empty side) and the floor stays in the frame.
-- The bottom purchase control is a **floating pill overlay** connected to the **left edge of the screen** (`left: 0`), not placed in the 12-column grid. Left side meets the viewport (square), right side stays a pill and hugs content. Name left, price, then CTA. **At 1920px and up** it keeps the original mockup spacing (`sm:bottom-10`, `lg:pl-20`, roomy gaps and CTA). **Below 1920px** it stays compact so it does not cover the rolled strap.
+- The bottom purchase control is a **floating pill overlay** connected to the **left edge of the screen** (`left: 0`), not placed in the 12-column grid. Left side meets the viewport (square), right side stays a pill and hugs content. Name left, price, then CTA. It stays hidden while the hero is on screen and appears after the shopper scrolls past the hero. **At 1920px and up** it keeps the original mockup spacing (`sm:bottom-10`, `lg:pl-20`, roomy gaps and CTA). **Below 1920px** it stays compact so it does not cover the rolled strap.
+
+**Mobile (below `lg`)** — centered column, packed to the **bottom** of the `100dvh` hero (header stays absolute at the top; leftover height is breathing room under the header):
+
+1. Title, description, price, then the primary CTA on its own row (not beside the price).
+2. Optional strap pill (checkbox + label + add-on price).
+3. Product photo, centered on the terrace. Below `lg`, the photo is the matching `color_*_mobile.png` (tighter pouch crop under `with_belt/` or `without_belt/`). At `lg` and up, the wide desktop PNG stays.
+4. Color control is **not** the desktop thumbnail cards. It is a compact **dot radiogroup** in a light pill at the bottom of the viewport (Black / Brown / Cognac swatches). Keyboard radios + visible focus still apply.
 
 ## Data model
 
@@ -92,7 +101,7 @@ Central catalog in `src/lib/products/` (single source for UI, metadata, JSON-LD)
 - [ ] Default view matches mockup: cognac, no extra strap, daylight background.
 - [ ] Black → black pouch + night `color_black` background.
 - [ ] Brown and cognac pair with their same-named background files.
-- [ ] Strap toggle swaps `without_belt` / `with_belt` and updates the visible price.
+- [ ] Strap toggle swaps `without_belt` / `with_belt` and updates the visible price. Below `lg`, that swap uses the `*_mobile` file for the active color.
 - [ ] One H1; Ukrainian body copy; crawlable HTML (not image-only text).
 - [ ] Unique title, description, canonical, OG image; Product + Organization + WebSite JSON-LD with no fake ratings.
 - [ ] Cart and checkout URLs are not in the sitemap; robots disallow them.
@@ -104,6 +113,7 @@ Central catalog in `src/lib/products/` (single source for UI, metadata, JSON-LD)
 - [ ] Desktop copy and product sit on the 1520px 12-column frame (copy cols 3–6, product photo cols 3–12 displayed at 85% of that span, right-aligned). Above 1520px the frame is centered; below it the frame is right-aligned so the product does not shrink. Header chrome stays on screen. The 1520px shell is not further inset on desktop.
 - [ ] Bottom purchase control is connected to the left screen edge (outside the 12-col grid), a floating inset pill overlaying the hero — not a full-width bar.
 - [ ] Terrace background keeps the floor at the bottom of the viewport; extra width is cropped equally left/right at ≥1520px, and from the left on desktop below 1520px; the pouch stays on the tiles when the viewport height changes.
+- [ ] Below `lg`, hero content is bottom-anchored (dynamic top gap), the in-hero CTA is visible, and color is chosen with the dot pill — not the desktop thumbnail cards.
 
 ## Open questions
 

@@ -4,6 +4,7 @@ import { ML_DAILY_POUCH, formatPriceUah } from "@/lib/products/ml-daily-pouch"
 import { cn } from "@/lib/utils"
 
 interface HeroStrapOptionProps {
+  className?: string
   hasShoulderStrap: boolean
   isDark?: boolean
   onShoulderStrapChange: (nextValue: boolean) => void
@@ -11,6 +12,7 @@ interface HeroStrapOptionProps {
 }
 
 const HeroStrapOption = ({
+  className,
   hasShoulderStrap,
   isDark = false,
   onShoulderStrapChange,
@@ -21,12 +23,13 @@ const HeroStrapOption = ({
       className={cn(
         "flex w-full min-w-0 cursor-pointer items-center justify-between gap-2 text-xs min-[1440px]:text-sm",
         variant === "plain"
-          ? "rounded-2xl border border-[#C4B8A8] px-4 py-3 text-[#211E1A]"
+          ? "rounded-2xl border border-[#C4B8A8] px-4 py-3 text-[#211E1A] max-lg:h-[53px] max-lg:rounded-[12.5px] max-lg:border-2 max-lg:border-[#DED8CC] max-lg:pr-8 max-lg:pl-[15px] max-lg:text-sm"
           : `rounded-2xl px-3 py-2 shadow-sm transition-colors duration-1000 ease-in-out motion-reduce:transition-none min-[1440px]:py-2.5 ${
               isDark
                 ? "bg-white/92 text-neutral-950"
                 : "bg-white/90 text-neutral-900"
             }`,
+        className,
       )}
     >
       <span className="flex min-w-0 items-center gap-2">
@@ -43,7 +46,9 @@ const HeroStrapOption = ({
             strokeWidth={3}
           />
         </span>
-        <span className="min-w-0 leading-snug">{ML_DAILY_POUCH.strap.label}</span>
+        <span className="min-w-0 leading-snug">
+          {ML_DAILY_POUCH.strap.label}
+        </span>
       </span>
       <span className="shrink-0 text-[20px] font-medium leading-none text-cognac tabular-nums min-[1440px]:text-[24px]">
         +{formatPriceUah(ML_DAILY_POUCH.strap.priceUah)}

@@ -1,0 +1,30 @@
+---
+description: React component and event-handler conventions
+globs: "**/*.tsx"
+alwaysApply: false
+---
+
+# React Conventions
+
+## Event handlers — pass stable callbacks directly
+
+When a prop expects a handler and you already have a **memoized** function with a **matching signature** (`useCallback` from a hook, or a module-level function), pass it **directly** — do not wrap it in an arrow that only forwards the call.
+
+```tsx
+// ✅ GOOD — stable reference, same behavior
+onRemove={upload.removeFile}
+onChange={upload.onPendingFileChange}
+
+// ❌ BAD — new function every render, no extra logic
+onRemove={() => upload.removeFile()}
+onChange={(files) => upload.onPendingFileChange(files)}
+```
+
+**Use an inline arrow (or `.bind`) when you need to:**
+
+- Pass arguments: `onClick={() => deleteItem(id)}`
+- Transform the payload: `onChange={(v) => setValue("name", v.trim())}`
+- Call multiple handlers: `onClick={() => { onClose(); reset() }}`
+- The source function is **not** memoized and the child is memoized with referential equality (rare — prefer fixing the hook with `useCallback` instead)
+
+**Prefer `useCallback` in hooks** for handlers returned to consumers so call sites can pass them through without wrappers.

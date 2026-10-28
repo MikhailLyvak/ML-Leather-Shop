@@ -12,20 +12,27 @@ export type ProductColor = {
   alt: string
   backgroundAlt: string
   backgroundSrc: string
+  backgroundSrcMobile: string
   fileKey: ProductFileKey
   id: ProductColorId
   label: string
   productSrcWithBelt: string
+  productSrcWithBeltMobile: string
   productSrcWithoutBelt: string
+  productSrcWithoutBeltMobile: string
   selectorSrc: string
+  swatch: string
   theme: HeroTheme
 }
 
 function colorAssets(fileKey: ProductFileKey) {
   return {
     backgroundSrc: `/images/hero_block_bg/color_${fileKey}.png`,
+    backgroundSrcMobile: `/images/hero_block_bg/color_${fileKey}_mobile.png`,
     productSrcWithBelt: `/images/product/with_belt/color_${fileKey}.png`,
+    productSrcWithBeltMobile: `/images/product/with_belt/color_${fileKey}_mobile.png`,
     productSrcWithoutBelt: `/images/product/without_belt/color_${fileKey}.png`,
+    productSrcWithoutBeltMobile: `/images/product/without_belt/color_${fileKey}_mobile.png`,
     selectorSrc: `/images/product/minimalistic_selector/color_${fileKey}.png`,
   }
 }
@@ -45,6 +52,8 @@ export const ML_DAILY_POUCH = {
   defaultColorId: "cognac" as ProductColorId,
   description:
     "Чоловічий клатч із натуральної італійської шкіри.\nДля порядку, стилю та щоденного комфорту.",
+  descriptionMobile:
+    "Чоловічий клатч із натуральної італійської\nшкіри. Для порядку, стилю та щоденного\nкомфорту.",
   dimensionsCm: {
     depth: 3,
     height: 17,
@@ -75,12 +84,16 @@ export const PRODUCT_COLOR_MAP: Record<ProductColorId, ProductColor> = {
     backgroundAlt:
       "Мармурова тераса з класичною колоною на тлі зоряного нічного узбережжя",
     backgroundSrc: BLACK_ASSETS.backgroundSrc,
+    backgroundSrcMobile: BLACK_ASSETS.backgroundSrcMobile,
     fileKey: "black",
     id: "black",
     label: "Black",
     productSrcWithBelt: BLACK_ASSETS.productSrcWithBelt,
+    productSrcWithBeltMobile: BLACK_ASSETS.productSrcWithBeltMobile,
     productSrcWithoutBelt: BLACK_ASSETS.productSrcWithoutBelt,
+    productSrcWithoutBeltMobile: BLACK_ASSETS.productSrcWithoutBeltMobile,
     selectorSrc: BLACK_ASSETS.selectorSrc,
+    swatch: "#1A1A1A",
     theme: "dark",
   },
   brown: {
@@ -88,12 +101,16 @@ export const PRODUCT_COLOR_MAP: Record<ProductColorId, ProductColor> = {
     backgroundAlt:
       "Мармурова тераса з класичною колоною на тлі узбережжя в сутінках",
     backgroundSrc: BROWN_ASSETS.backgroundSrc,
+    backgroundSrcMobile: BROWN_ASSETS.backgroundSrcMobile,
     fileKey: "brown",
     id: "brown",
     label: "Brown",
     productSrcWithBelt: BROWN_ASSETS.productSrcWithBelt,
+    productSrcWithBeltMobile: BROWN_ASSETS.productSrcWithBeltMobile,
     productSrcWithoutBelt: BROWN_ASSETS.productSrcWithoutBelt,
+    productSrcWithoutBeltMobile: BROWN_ASSETS.productSrcWithoutBeltMobile,
     selectorSrc: BROWN_ASSETS.selectorSrc,
+    swatch: "#4A3428",
     theme: "dark",
   },
   cognac: {
@@ -101,12 +118,16 @@ export const PRODUCT_COLOR_MAP: Record<ProductColorId, ProductColor> = {
     backgroundAlt:
       "Мармурова тераса з класичною колоною на тлі середземноморського узбережжя вдень",
     backgroundSrc: COGNAC_ASSETS.backgroundSrc,
+    backgroundSrcMobile: COGNAC_ASSETS.backgroundSrcMobile,
     fileKey: "orange",
     id: "cognac",
     label: "Cognac",
     productSrcWithBelt: COGNAC_ASSETS.productSrcWithBelt,
+    productSrcWithBeltMobile: COGNAC_ASSETS.productSrcWithBeltMobile,
     productSrcWithoutBelt: COGNAC_ASSETS.productSrcWithoutBelt,
+    productSrcWithoutBeltMobile: COGNAC_ASSETS.productSrcWithoutBeltMobile,
     selectorSrc: COGNAC_ASSETS.selectorSrc,
+    swatch: "#C4784A",
     theme: "light",
   },
 }

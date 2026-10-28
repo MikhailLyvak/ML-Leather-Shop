@@ -8,58 +8,31 @@ export function useHeroExperience() {
   return useProductSelection()
 }
 
-export function useHeroDockVisibility(
-  primaryCtaRef: RefObject<HTMLButtonElement | null>,
-) {
-  const [isPrimaryCtaVisible, setIsPrimaryCtaVisible] = useState(true)
+export function useHeroDockVisibility(heroRef: RefObject<HTMLElement | null>) {
+  const [isHeroVisible, setIsHeroVisible] = useState(true)
 
   useEffect(() => {
-    const primaryCta = primaryCtaRef.current
+    const hero = heroRef.current
 
-    if (!primaryCta) {
+    if (!hero) {
       return
-    }
-
-    const desktopMediaQuery = window.matchMedia("(min-width: 640px)")
-
-    const syncVisibility = (isIntersecting: boolean) => {
-      setIsPrimaryCtaVisible(
-        desktopMediaQuery.matches ? isIntersecting : false,
-      )
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        syncVisibility(entry.isIntersecting)
+        setIsHeroVisible(entry.intersectionRatio >= 1)
       },
-      { threshold: 0 },
+      { threshold: [0, 1] },
     )
 
-    observer.observe(primaryCta)
-
-    const onViewportChange = () => {
-      if (!desktopMediaQuery.matches) {
-        setIsPrimaryCtaVisible(false)
-        return
-      }
-
-      const [entry] = observer.takeRecords()
-
-      if (entry) {
-        syncVisibility(entry.isIntersecting)
-      }
-    }
-
-    desktopMediaQuery.addEventListener("change", onViewportChange)
-    onViewportChange()
+    observer.observe(hero)
 
     return () => {
       observer.disconnect()
-      desktopMediaQuery.removeEventListener("change", onViewportChange)
     }
-  }, [primaryCtaRef])
+  }, [heroRef])
 
-  return !isPrimaryCtaVisible
+  return !isHeroVisible
 }
 
 const STICKY_HEADER_SCROLL_THRESHOLD_PX = 16

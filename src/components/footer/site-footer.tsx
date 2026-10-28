@@ -6,6 +6,7 @@ import {
   FOOTER_LEGAL_LINKS,
   FOOTER_SOCIAL_LINKS,
 } from "@/components/footer/content"
+import { MeanderDivider } from "@/components/products/meander-divider"
 import { BRAND } from "@/lib/brand"
 import { HOME_HREF } from "@/utils/route-href"
 
@@ -13,16 +14,19 @@ const FOOTER_BODY_TEXT_CLASSNAME =
   "m-0 font-gilroy text-sm font-normal leading-[1.45] tracking-normal text-[#211E1A]/75"
 
 const FOOTER_COLUMN_TITLE_CLASSNAME =
-  "m-0 font-gilroy text-base font-medium leading-none tracking-normal text-[#211E1A] [text-box:trim-both_cap_alphabetic]"
+  "m-0 font-gilroy text-[20px] font-normal leading-[normal] tracking-normal text-[#211E1A] min-[1024px]:text-base min-[1024px]:font-medium min-[1024px]:leading-none min-[1024px]:[text-box:trim-both_cap_alphabetic]"
+
+const FOOTER_ROW_CELL_CLASSNAME =
+  "order-3 mt-[30px] flex min-w-0 shrink-0 flex-col gap-2.5 border-y border-[#B4B4B4] py-[15px] min-[1024px]:order-none min-[1024px]:mt-0 min-[1024px]:border-0 min-[1024px]:py-0"
 
 const FOOTER_LEGAL_LINK_CLASSNAME =
-  "font-gilroy text-sm font-medium leading-[1.35] tracking-normal text-[#211E1A] transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#211E1A]"
+  "font-gilroy text-base font-normal min-[1024px]:text-sm min-[1024px]:font-medium leading-[1.35] tracking-normal text-[#211E1A] transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#211E1A]"
 
 const FooterMastercardIcon = () => {
   return (
     <svg
       aria-hidden="true"
-      className="h-5 w-auto"
+      className="h-[30px] w-auto min-[1024px]:h-5"
       fill="none"
       viewBox="0 0 32 20"
       xmlns="http://www.w3.org/2000/svg"
@@ -37,7 +41,7 @@ const FooterVisaIcon = () => {
   return (
     <svg
       aria-hidden="true"
-      className="h-4 w-auto"
+      className="h-[22px] w-auto min-[1024px]:h-4"
       fill="none"
       viewBox="0 0 48 16"
       xmlns="http://www.w3.org/2000/svg"
@@ -54,7 +58,7 @@ const FooterInstagramIcon = () => {
   return (
     <svg
       aria-hidden="true"
-      className="size-4"
+      className="size-6 min-[1024px]:size-4"
       fill="none"
       stroke="currentColor"
       strokeWidth="1.5"
@@ -72,7 +76,7 @@ const FooterTikTokIcon = () => {
   return (
     <svg
       aria-hidden="true"
-      className="size-4"
+      className="size-6 min-[1024px]:size-4"
       fill="currentColor"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
@@ -84,9 +88,10 @@ const FooterTikTokIcon = () => {
 
 const SiteFooter = () => {
   return (
-    <footer className="relative overflow-hidden border-t border-[#211E1A]/10 bg-[#E3DFD3]">
-      <div className="relative z-10 mx-auto max-w-7xl px-5 pb-8 pt-14 sm:px-10 sm:pb-10 sm:pt-16">
-        <div className="flex flex-col items-center text-center">
+    <footer className="relative overflow-hidden bg-[#DED8CC] min-[1024px]:border-t min-[1024px]:border-[#211E1A]/10 min-[1024px]:bg-[#E3DFD3]">
+      <MeanderDivider className="lg:hidden" />
+      <div className="relative z-10 mx-auto max-w-[1520px] px-[15px] pt-10 sm:px-10 min-[1024px]:pb-10 min-[1024px]:pt-16">
+        <div className="flex flex-col items-center border-b border-[#B4B4B4] pb-[15px] text-center min-[1024px]:border-0 min-[1024px]:pb-0">
           <Link
             aria-label={`${BRAND.initials} — ${BRAND.wordmark}`}
             className="font-serif text-[56px] font-bold uppercase leading-none tracking-normal text-[#211E1A] transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#211E1A] sm:text-[72px] [text-box:trim-both_cap_alphabetic]"
@@ -102,10 +107,10 @@ const SiteFooter = () => {
           </a>
         </div>
 
-        <div className="mt-12 grid gap-10 sm:grid-cols-2 lg:mt-16 lg:grid-cols-5 lg:gap-8">
+        <div className="mt-[30px] grid grid-cols-2 min-[1024px]:mt-16 min-[1024px]:flex min-[1024px]:flex-row min-[1024px]:flex-nowrap min-[1024px]:items-start min-[1024px]:justify-between min-[1024px]:gap-6 xl:gap-10">
           <nav
             aria-label="Юридична інформація"
-            className="flex flex-col items-center gap-3 sm:items-start"
+            className="order-4 col-span-2 mt-[30px] flex min-w-0 shrink-0 flex-col items-center gap-[21px] min-[1024px]:order-none min-[1024px]:mt-0 min-[1024px]:items-start min-[1024px]:gap-3"
           >
             {FOOTER_LEGAL_LINKS.map((link) => (
               <Link
@@ -118,7 +123,9 @@ const SiteFooter = () => {
             ))}
           </nav>
 
-          <div className="flex flex-col items-center gap-3 sm:items-start">
+          <div
+            className={`${FOOTER_ROW_CELL_CLASSNAME} items-start min-[1024px]:gap-3`}
+          >
             <h2 className={FOOTER_COLUMN_TITLE_CLASSNAME}>
               {FOOTER_CONTENT.paymentTitle}
             </h2>
@@ -131,16 +138,18 @@ const SiteFooter = () => {
             </div>
           </div>
 
-          <div className="flex flex-col items-center gap-3 sm:items-start">
+          <div className="order-1 col-span-2 flex min-w-0 shrink-0 flex-col items-center gap-2.5 min-[1024px]:order-none min-[1024px]:items-start min-[1024px]:gap-3">
             <h2 className={FOOTER_COLUMN_TITLE_CLASSNAME}>
               {FOOTER_CONTENT.addressTitle}
             </h2>
-            <p className={`${FOOTER_BODY_TEXT_CLASSNAME} max-w-48 text-center sm:text-left`}>
+            <p
+              className={`${FOOTER_BODY_TEXT_CLASSNAME} text-center min-[1024px]:max-w-48 min-[1024px]:text-left`}
+            >
               {FOOTER_CONTENT.address}
             </p>
           </div>
 
-          <div className="flex flex-col items-center gap-3 sm:items-start">
+          <div className="order-2 col-span-2 mt-5 flex min-w-0 shrink-0 flex-col items-center gap-2.5 min-[1024px]:order-none min-[1024px]:mt-0 min-[1024px]:items-start min-[1024px]:gap-3">
             <h2 className={FOOTER_COLUMN_TITLE_CLASSNAME}>
               {FOOTER_CONTENT.emailTitle}
             </h2>
@@ -152,16 +161,18 @@ const SiteFooter = () => {
             </a>
           </div>
 
-          <div className="flex flex-col items-center gap-4 sm:items-start">
+          <div
+            className={`${FOOTER_ROW_CELL_CLASSNAME} items-end min-[1024px]:items-start min-[1024px]:gap-4`}
+          >
             <h2 className={FOOTER_COLUMN_TITLE_CLASSNAME}>
               {FOOTER_CONTENT.socialTitle}
             </h2>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-[5px] min-[1024px]:gap-3">
               {FOOTER_SOCIAL_LINKS.map((socialLink) => (
                 <a
                   key={socialLink.id}
                   aria-label={socialLink.label}
-                  className="inline-flex size-9 items-center justify-center rounded-full border border-[#211E1A]/35 text-[#211E1A] transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#211E1A]"
+                  className="inline-flex size-[45px] items-center justify-center rounded-full border border-[#706058] min-[1024px]:size-9 min-[1024px]:border-[#211E1A]/35 text-[#211E1A] transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#211E1A]"
                   href={socialLink.href}
                   rel="noreferrer"
                   target="_blank"
@@ -176,12 +187,16 @@ const SiteFooter = () => {
             </div>
           </div>
         </div>
+
+        <p className="mt-[30px] flex h-[61px] items-center justify-center border-t border-[#B4B4B4] font-gilroy text-base font-normal text-[#211E1A] min-[1024px]:hidden">
+          {FOOTER_CONTENT.copyright}
+        </p>
       </div>
 
       <Image
         alt={FOOTER_CONTENT.columnImageAlt}
         aria-hidden={FOOTER_CONTENT.columnImageAlt === ""}
-        className="pointer-events-none absolute right-0 bottom-0 z-[1] h-auto w-[min(72vw,360px)] max-w-none translate-y-8 opacity-100 sm:w-[min(58vw,480px)] sm:translate-y-12 lg:w-[min(42vw,792px)] lg:translate-y-16"
+        className="pointer-events-none absolute right-0 bottom-0 z-[1] hidden h-auto min-[1024px]:block w-[min(72vw,360px)] max-w-none translate-y-8 opacity-100 sm:w-[min(58vw,480px)] sm:translate-y-12 lg:w-[min(42vw,792px)] lg:translate-y-16"
         height={FOOTER_CONTENT.columnImageHeight}
         sizes="(max-width: 640px) 72vw, (max-width: 1024px) 58vw, 792px"
         src={FOOTER_CONTENT.columnImageSrc}
@@ -190,7 +205,7 @@ const SiteFooter = () => {
 
       <p
         aria-hidden="true"
-        className="pointer-events-none relative z-[2] -mb-6 select-none px-2 text-center font-gilroy text-[clamp(3.5rem,14vw,11rem)] font-medium uppercase leading-[0.85] tracking-[0.06em] text-[#211E1A]/[0.07] sm:-mb-10 [text-box:trim-both_cap_alphabetic]"
+        className="pointer-events-none relative z-[2] -mb-6 hidden select-none min-[1024px]:block px-2 text-center font-gilroy text-[clamp(3.5rem,14vw,11rem)] font-medium uppercase leading-[0.85] tracking-[0.06em] text-[#211E1A]/[0.07] sm:-mb-10 [text-box:trim-both_cap_alphabetic]"
       >
         {BRAND.wordmark}
       </p>

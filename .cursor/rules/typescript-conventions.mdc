@@ -1,0 +1,348 @@
+---
+description: TypeScript naming, exports, function style, type vs interface, and Zod conventions
+globs: "**/*.ts,**/*.tsx"
+alwaysApply: false
+---
+
+# TypeScript Conventions
+
+## Object map naming
+
+Name lookup/lookup-style object constants with the `_MAP` suffix so they are clearly identifiable as key-value maps.
+
+- **Pattern**: `XXXXX_MAP` (e.g. `CHANNEL_CREATIVE_TYPE_MAP`, `ALLOWED_MIME_TYPES_BY_CREATIVE_TYPE_MAP`).
+- Use for: `Record<K, V>`, `Partial<Record<K, V>>`, or plain objects used as lookup maps.
+
+**Examples**
+
+```typescript
+// ✅ GOOD
+const CHANNEL_CREATIVE_TYPE_MAP: Record<CampaignChannel, CreativeType[]> = { ... }
+const ALLOWED_MIME_TYPES_BY_CREATIVE_TYPE_MAP: Partial<Record<CreativeType, string[]>> = { ... }
+const CREATIVE_TYPE_TITLES_MAP: Record<CreativeType, string> = { ... }
+
+// ❌ BAD — map-like constant without _MAP suffix
+const CHANNEL_CREATIVE_TYPES: Record<CampaignChannel, CreativeType[]> = { ... }
+```
+
+## Exports and function style
+
+Prefer consistency and readability over personal preference when choosing between named/default exports and function declarations vs arrow functions.
+
+### Exports
+
+Prefer **named exports** by default. Named exports improve discoverability, autocomplete, refactoring safety, and code review readability. They also make module APIs explicit and reduce accidental renaming during imports.
+
+```typescript
+// ✅ GOOD
+export function buildReportPayload() {}
+
+export const DEFAULT_REPORT_LIMIT = 50
+
+export type ReportPayload = {
+  id: string
+}
+
+import { buildReportPayload, DEFAULT_REPORT_LIMIT } from "./report"
+```
+
+Avoid default exports for regular utilities, hooks, constants, types, and shared helpers.
+
+```typescript
+// ❌ AVOID
+export default function buildReportPayload() {}
+```
+
+Use default exports only when required by framework/tooling conventions, or when the file intentionally exposes a single primary entry point.
+
+Valid cases:
+
+- Next.js pages, layouts, and route handlers
+- `React.lazy`-loaded components
+- Framework-required exports (config files, etc.)
+- Files with a clearly intentional single public API
+
+```typescript
+// ✅ GOOD — framework convention
+export default function Page() {
+  return <ReportsPage />
+}
+```
+
+### Function declarations vs arrow functions
+
+Prefer **function declarations** for top-level named utility/helper functions and shared business logic. They are easier to scan, improve stack traces, and create consistent structure. **React components are the exception** — see [React components](#react-components) below.
+
+```typescript
+// ✅ GOOD
+function buildReportPayload(report: Report): ReportPayload {
+  return { id: report.id }
+}
+
+// ❌ AVOID for top-level named exports
+const buildReportPayload = (report: Report): ReportPayload => {
+  return { id: report.id }
+}
+```
+
+Use **arrow functions** when they are more idiomatic or contextually appropriate:
+
+- Inline callbacks and array methods
+- Event handlers and React props
+- Small local helpers inside another function
+- Closures that use surrounding scope
+- Cases where lexical `this` behavior is intentional
+
+```typescript
+// ✅ GOOD — inline callback
+items.map((item) => item.id)
+
+// ✅ GOOD — event handler
+<Button onClick={() => handleSave(reportId)} />
+
+// ✅ GOOD — small local helper
+function buildChartData(items: Item[]) {
+  const normalizeValue = (value: number) => value / maxValue
+
+  return items.map((item) => ({
+    ...item,
+    value: normalizeValue(item.value),
+  }))
+}
+```
+
+### React components
+
+**Define components as a `const` arrow function, then export them in a bottom `export { … }` block** — even for a single export. This matches the prevailing convention across `src/components` and `src/app`.
+
+```typescript
+// ✅ GOOD — arrow component + bottom named export
+interface ReportSummaryCardProps {
+  title: string
+}
+
+const ReportSummaryCard = ({ title }: ReportSummaryCardProps) => {
+  return <Card>{title}</Card>
+}
+
+export { ReportSummaryCard }
+
+// ❌ BAD — anonymous default export
+export default function () {
+  return <Card />
+}
+```
+
+Group related exports (component + its props type) in the same bottom block:
+
+```typescript
+export { ReportSummaryCard }
+export type { ReportSummaryCardProps }
+```
+
+**Pages, layouts, and route handlers** keep the framework-required `export default`, with a named function:
+
+```typescript
+// ✅ GOOD — framework convention
+export default function ReportPage() {
+  return <ReportsPage />
+}
+```
+
+### Export placement — `export function` vs bottom `export { … }`
+
+**React components:** always `const` arrow + bottom `export { … }` (see [React components](#react-components)), even for a single export.
+
+**Non-component utilities / hooks / constants / types:** prefer an **inline export** for a single primary export; use a **bottom `export { … }` block** when the file exports **multiple** symbols, you want a clear public API block (common in `ui/` primitives), or you are matching a feature folder that already uses bottom exports.
+
+```typescript
+// ✅ GOOD — single utility, inline export
+export function buildReportPayload(report: Report): ReportPayload {
+  return { id: report.id }
+}
+
+// ✅ GOOD — component: arrow + bottom export (component + props type)
+const OldAppFeedbackModal = (props: OldAppFeedbackModalProps) => {
+  return <Dialog>...</Dialog>
+}
+
+export { OldAppFeedbackModal }
+export type { OldAppFeedbackModalProps }
+```
+
+Do not mix component styles within the same feature folder without reason.
+
+**Summary:** named exports by default; default exports only when framework-required (pages / layouts / route handlers) or intentionally justified; **function declarations** for top-level utility/helper functions; **`const` arrow + bottom `export { … }`** for React components; arrow functions for callbacks, handlers, closures, and small local helpers.
+
+## Type vs interface
+
+Prefer **`type`** for unions, intersections, tuples, utility-type aliases (`Omit`, `Pick`), and `z.infer<typeof …>`. Prefer **`interface`** for React component props (`XxxProps`), especially when extending other prop types.
+
+For simple object shapes with no composition needs, either works — match surrounding code in the same feature folder.
+
+- **Module-internal shapes** that are not part of the public API: use unexported `type` (do not export unless another module imports the type).
+- **Exported data/DTO shapes**: `export type`.
+- **Component props**: `interface XxxProps` colocated with the component (or in a colocated `types.ts` when shared).
+
+```typescript
+// ✅ GOOD — internal option shape
+type CampaignChannelOption = {
+  icon: LucideIcon
+  label: string
+  value: CampaignChannel
+}
+
+// ✅ GOOD — component props
+interface CampaignChannelCellProps {
+  channel?: CampaignChannel
+}
+
+// ✅ GOOD — union / inferred
+export type EditPixelFormValues = z.infer<typeof EditPixelFormValuesSchema>
+export type PixelDropdownProps = SinglePixelDropdownProps | MultiPixelDropdownProps
+
+// ❌ BAD — interface cannot express a union
+interface PixelDropdownProps = SinglePixelDropdownProps | MultiPixelDropdownProps
+```
+
+## Variable naming — use descriptive names
+
+Prefer **descriptive locals** over opaque 1–2 letter abbreviations in new and edited code. Name variables after the domain concept they hold.
+
+- **Default:** reuse the property or type name when building or mutating an object (`matchOptions`, `scopePatch`, `previousFilter`).
+- **Avoid:** abbreviating a concept used across multiple lines in the same block (`mo`, `pf`, `br` when it is not a throwaway parse handle).
+
+Use shorter names only when they are already idiomatic, universally recognized, or scoped to a very small context.
+
+**Exceptions** (short names are fine):
+
+- Loop indices: `i`, `j`
+- Sort comparator params: `a`, `b`
+- Small callback params: `(event) =>`, `(error) =>`
+- Catch bindings: `error`, `err`
+- Very small mathematical or coordinate-style scopes: `x`, `y`
+- Common identifier conventions: `id`
+- Names mandated by an external API (destructuring, library types)
+
+```typescript
+// ✅ GOOD — mirrors Filter.matchOptions
+const matchOptions: NonNullable<Filter["matchOptions"]> = {
+  ...(previousFilter.matchOptions ?? {}),
+}
+
+matchOptions.domain_type = [domainType]
+
+return {
+  ...previousFilter,
+  matchOptions: Object.keys(matchOptions).length
+    ? matchOptions
+    : undefined,
+}
+
+// ❌ BAD — reader must decode the abbreviation
+const mo: NonNullable<Filter["matchOptions"]> = {
+  ...(previousFilter.matchOptions ?? {}),
+}
+
+mo.domain_type = [domainType]
+
+return {
+  ...previousFilter,
+  matchOptions: Object.keys(mo).length ? mo : undefined,
+}
+
+// ✅ GOOD — role-based name for a parse result used in a small block
+const breakoutParse = z.enum(ReportingGeoTab).safeParse(raw)
+
+if (!breakoutParse.success) return
+
+// ❌ BAD — abbreviated compared state in a multi-line block
+const f = state.filter
+const pf = previousState.filter
+
+// ✅ GOOD
+const filter = state.filter
+const previousFilter = previousState.filter
+
+// ✅ GOOD — conventional comparator names
+items.sort((a, b) => a.createdAt - b.createdAt)
+
+// ✅ GOOD — descriptive names when comparator logic is more involved
+items.sort((leftUser, rightUser) =>
+  leftUser.lastName.localeCompare(rightUser.lastName),
+)
+```
+
+## Zod
+
+Use **Zod v4** for all schemas and validation. The project depends on `zod@^4`. Prefer Zod v4 APIs and types; avoid v3-only patterns.
+
+### Optional fields at JSON/API boundaries
+
+**`.optional()`** allows **`undefined` or a missing key** only; it does **not** accept **`null`**. **`JSON.stringify`** drops properties whose values are **`undefined`** (it does not write them as **`null`** on the wire). Many APIs nonetheless send an explicit **`null`** for unset fields, so schemas that must accept those on-the-wire **`null`** values should use **`.nullish()`** (union with **`null`**) rather than **`.optional()`** alone—prefer fixing the **Zod** schema over normalizing `null` → `undefined` in UI code when the wire format may send **`null`**.
+
+- **Prefer:** `z.number().nullish()`, `z.string().nullish()`, `z.unknown().nullish()` when the wire format may send `null`.
+- **Avoid:** relying on client-side `nullToUndefined` helpers solely to satisfy `.optional()` — fix the schema instead unless a downstream system truly requires omitted keys only.
+- **Do not chain `.optional()` after `.nullish()`** — `.nullish()` already allows `null`, `undefined`, and a missing key; extra `.optional()` is redundant.
+- **Types:** when a Zod field becomes `.nullish()`, align hand-written types (e.g. entity `AudienceRule`) with `| null` on those keys where needed. UI/forms that still use `.optional()` can coerce `null → undefined` at read boundaries (e.g. `value ?? undefined`).
+
+```typescript
+// ✅ GOOD — null, undefined, or omitted key
+account_based_marketing: AccountBasedMarketingSchema.nullish()
+
+// ❌ BAD — .optional() adds nothing after .nullish()
+account_based_marketing: AccountBasedMarketingSchema.nullish().optional()
+```
+
+### TypeScript enums — one schema, `safeParse` at boundaries
+
+For a TypeScript `enum` (or union of literals) that appears in both **forms** and **API/loose types** (e.g. `string | undefined` on `CampaignType`):
+
+1. **Export a single Zod schema** next to the enum (e.g. `BudgetPacingSchema = z.nativeEnum(BudgetPacing)` in `@/utils/campaign`).
+2. **Reuse that schema** in feature Zod object schemas (e.g. `budget_pacing: BudgetPacingSchema.optional()`).
+3. When **coercing defaults** from API data, use **`schema.safeParse(value)`** and fall back to an explicit default — do **not** hand-roll `if (value === Enum.A || value === Enum.B)` unless there is a strong reason.
+
+This keeps allowed values in one place and avoids unsafe casts from loose strings.
+
+## String type narrowing
+
+For **`unknown`** or **union** values, use **`isString` from `@/utils/string`** instead of **`typeof value === "string"`**. It is a typed predicate (`value is string`) and keeps checks consistent across the codebase.
+
+```typescript
+// ✅ GOOD
+import { isString } from "@/utils/string"
+
+if (isString(raw)) {
+  /* raw is string */
+}
+
+// ❌ BAD — duplicate guard; worse narrowing ergonomics when reused
+if (typeof raw === "string") {
+}
+```
+
+## Array emptiness checks
+
+For **`unknown`**, optional filter values, or values that may not be arrays, use the shared guards from **`@/utils/array`** instead of hand-rolled `Array.isArray` + `length` checks.
+
+```typescript
+import { isArrayAndEmpty, isArrayAndHasElements } from "@/utils/array"
+
+// ✅ GOOD
+if (isArrayAndHasElements(statusValues)) {
+  /* statusValues is unknown[] with length > 0 */
+}
+
+if (isArrayAndEmpty(items)) {
+  /* items is [] */
+}
+
+// ❌ BAD
+if (Array.isArray(statusValues) && statusValues.length > 0) {
+}
+
+if (Array.isArray(items) && items.length === 0) {
+}
+```
+
+When the value is already typed as an array (e.g. `InviteStatus[]`), a plain **`items.length > 0`** check is fine — prefer the utils when the input is loose/`unknown`/optional matchOptions-style data.

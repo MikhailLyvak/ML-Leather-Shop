@@ -1,0 +1,46 @@
+---
+description: TanStack Query key conventions, stale times, and cache invalidation
+globs: src/lib/query-keys.ts,src/**/hooks.ts
+alwaysApply: false
+---
+
+# Query Keys & Caching
+
+All query keys are defined in `@/lib/query-keys.ts`. Never hardcode key arrays.
+
+## Key Structure
+
+```typescript
+import { queryKeys } from "@/lib/query-keys"
+
+queryKeys.product.all                    // ["product"]
+queryKeys.product.bySlug("ml-daily-klatch")
+queryKeys.cart.all                       // ["cart"]
+queryKeys.order.byId(id)
+```
+
+Use a **singular** prefix for one resource (`"product"`). Use a **plural** prefix only for list/table queries if you add them later.
+
+## StaleTime Constants
+
+```typescript
+import { STALE_TIME } from "@/lib/query-keys"
+
+STALE_TIME.REALTIME      // 30s — cart, live stock
+STALE_TIME.SEMI_STATIC   // 5min — product details
+STALE_TIME.STATIC        // Infinity — static options
+```
+
+## Invalidation After Mutation
+
+**Default: `invalidateQueries`.** It marks matching queries stale and refetches **active** ones automatically. Inactive cache entries refresh the next time something subscribes.
+
+```typescript
+await queryClient.invalidateQueries({ queryKey: queryKeys.cart.all })
+```
+
+**Use `refetchQueries`** only when you **must** force an immediate network refetch. Otherwise keep **`invalidateQueries`**.
+
+## Adding New Query Keys
+
+Add to `queryKeys` in `query-keys.ts`. Follow the existing pattern: `all` (prefix), `byId` / `bySlug`, then more specific keys.

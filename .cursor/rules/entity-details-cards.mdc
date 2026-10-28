@@ -1,0 +1,40 @@
+---
+description: Details-card header layout when a card shows status and actions
+globs: src/components/**/*.tsx
+alwaysApply: false
+---
+
+# Entity details cards — status + actions header
+
+Use this layout for summary/preview cards that show a **status indicator** (badge, toggle, dot) **and** action buttons (product, cart line, order).
+
+## Header layout
+
+- Outer row: `flex items-start justify-between gap-2` (add `mb-2` when body content follows).
+- **Left** (`flex-1 min-w-0`): title (`text-sm font-medium`) + optional subtitle (`text-xs text-muted-foreground`).
+- **Right** (`flex items-center gap-2 shrink-0`): **status first**, then action buttons.
+
+## Skeletons
+
+Mirror the same header: title block on the left, status + action skeletons grouped on the right.
+
+```tsx
+// ✅ GOOD — status before actions, grouped on the right
+<div className="flex items-start justify-between gap-2 mb-2">
+  <div className="flex-1 min-w-0">
+    <h4 className="text-sm font-medium truncate">{name}</h4>
+    <p className="text-xs text-muted-foreground">{subtitle}</p>
+  </div>
+  <div className="flex items-center gap-2 shrink-0">
+    <Badge variant={variant} className="text-xs">{status}</Badge>
+    <Button size="sm" variant="ghost" className="size-6 p-0">...</Button>
+  </div>
+</div>
+
+// ❌ BAD — actions before status, or status outside the right group
+<div className="flex items-center gap-2">
+  <div className="flex-1">{name}</div>
+  <div>{actions}</div>
+  <Badge>{status}</Badge>
+</div>
+```

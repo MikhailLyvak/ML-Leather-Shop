@@ -49,6 +49,7 @@ export const FOOTER_CONTENT = {
   columnImageWidth: 792,
   contactEmail: "michael.lyvanchello@gmail.com",
   contactEmailDisplay: "Michael.Lyvanchello@gmail.com",
+  copyright: "© 2026. All Rights Reserved.",
   paymentTitle: "Оплата",
   addressTitle: "Адреса",
   emailTitle: "E-mail",

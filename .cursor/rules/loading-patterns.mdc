@@ -1,0 +1,37 @@
+---
+description: Loading indicator patterns — skeleton vs spinner decision guide
+globs: src/**/loading.tsx,src/components/**/*.tsx
+alwaysApply: false
+---
+
+# Loading Patterns
+
+## Decision Guide
+
+| Context                    | Pattern              |
+|----------------------------|----------------------|
+| List / collection page     | Page skeleton        |
+| Card / sidebar content     | `Skeleton`           |
+| Button action in-progress  | `Button loading` prop |
+| Inline expand / fetch      | `Spinner`            |
+| Form page loading          | Full-page spinner    |
+
+## Button Loading
+
+Always use the built-in `loading` prop when the shared `Button` supports it — never manually render spinners inside the button:
+
+```tsx
+<Button loading={isPending}>Save</Button>
+```
+
+If `Button` does not yet have `loading`, add it to the primitive instead of one-off spinners at call sites.
+
+## Route `loading.tsx`
+
+Prefer a skeleton that matches the page layout (product landing, cart, checkout). Keep the fallback visually close to the final UI so it does not jump.
+
+## Collection / refetch states
+
+- **Initial load** (no data): full skeleton
+- **Refetch** (data exists): keep content visible with reduced opacity overlay
+- **Error**: centered message, no spinner

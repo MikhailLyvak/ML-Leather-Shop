@@ -1,18 +1,22 @@
 import Image from "next/image"
 
+import type { CSSProperties } from "react"
+
 import { WHAT_IN_CONTENT } from "@/components/products/what-in/content"
 
+/** Desktop card width — mobile images keep the same share of their card. */
+const WHAT_IN_DESKTOP_CARD_WIDTH_PX = 300
+
 const WHAT_IN_CARD_CLASSNAME =
-  "flex h-70 w-75 shrink-0 snap-start flex-col overflow-hidden rounded-2xl bg-[#F2EFEB]"
+  "flex aspect-[175/165] flex-col overflow-hidden rounded-[15px] bg-[#ECE8E1] drop-shadow-[8.7px_2.3px_7px_rgba(0,0,0,0.08)] lg:aspect-auto lg:h-70 lg:w-75 lg:shrink-0 lg:snap-start lg:rounded-2xl lg:bg-[#F2EFEB] lg:drop-shadow-none"
 
 const WHAT_IN_CARD_TITLE_CLASSNAME =
-  "m-5 mb-0 text-xl font-bold font-serif uppercase leading-none tracking-[0.02em] text-[#211E1A] [text-box:trim-both_cap_alphabetic]"
+  "m-[11.6px] mb-0 font-gilroy text-xs font-medium uppercase leading-[normal] text-black lg:m-5 lg:mb-0 lg:font-serif lg:text-xl lg:font-bold lg:leading-none lg:tracking-[0.02em] lg:text-[#211E1A] lg:[text-box:trim-both_cap_alphabetic]"
 
 const WHAT_IN_TRACK_CLASSNAME =
-  "mt-12.5 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain scroll-smooth scroll-pl-5 touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden px-5 sm:scroll-pl-10 sm:px-10 min-[1880px]:justify-center min-[1880px]:overflow-visible min-[1880px]:snap-none min-[1880px]:px-0"
+  "mt-5 grid grid-cols-2 gap-2.5 px-[15px] sm:px-10 lg:mt-12.5 lg:flex lg:snap-x lg:snap-mandatory lg:gap-4 lg:overflow-x-auto lg:overscroll-x-contain lg:scroll-smooth lg:scroll-pl-10 lg:touch-pan-x lg:[-ms-overflow-style:none] lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden min-[1880px]:justify-center min-[1880px]:overflow-visible min-[1880px]:snap-none min-[1880px]:px-0"
 
-const WHAT_IN_IMAGE_BOTTOM_CLASSNAME =
-  "mt-auto flex items-end justify-center"
+const WHAT_IN_IMAGE_BOTTOM_CLASSNAME = "mt-auto flex items-end justify-center"
 
 const WHAT_IN_IMAGE_CENTER_CLASSNAME = "flex flex-1 items-center justify-center"
 
@@ -37,10 +41,15 @@ const WhatInCard = ({
       <div className={imageWrapperClassName}>
         <Image
           alt={alt}
-          className="block h-auto w-auto"
+          className="block h-auto w-(--what-in-image-width) lg:w-auto"
           height={height}
-          sizes="300px"
+          sizes="(max-width: 1023px) 40vw, 300px"
           src={image}
+          style={
+            {
+              "--what-in-image-width": `${(width / WHAT_IN_DESKTOP_CARD_WIDTH_PX) * 100}%`,
+            } as CSSProperties
+          }
           width={width}
         />
       </div>
@@ -52,14 +61,14 @@ const WhatIn = () => {
   return (
     <section
       aria-labelledby={WHAT_IN_CONTENT.headingId}
-      className="my-30 flex flex-col"
+      className="my-10 flex flex-col lg:my-30"
       id={WHAT_IN_CONTENT.sectionId}
     >
-      <p className="m-0 w-full text-center font-gilroy text-base font-normal leading-[normal] tracking-[0.15em] text-cognac">
+      <p className="m-0 w-full px-[15px] text-center font-gilroy text-xs font-normal uppercase leading-[normal] tracking-[0.15em] text-cognac lg:px-0 lg:text-base lg:normal-case">
         {WHAT_IN_CONTENT.eyebrow}
       </p>
       <h2
-        className="mt-3.5 m-0 text-center font-serif text-[48px] font-bold uppercase leading-none tracking-normal text-[#211E1A] [text-box:trim-both_cap_alphabetic]"
+        className="m-0 mx-auto mt-px max-w-[272px] text-center font-serif text-[24px] font-bold uppercase leading-[normal] tracking-normal text-[#211E1A] lg:mt-3.5 lg:max-w-none lg:text-[48px] lg:leading-none lg:[text-box:trim-both_cap_alphabetic]"
         id={WHAT_IN_CONTENT.headingId}
       >
         {WHAT_IN_CONTENT.heading}

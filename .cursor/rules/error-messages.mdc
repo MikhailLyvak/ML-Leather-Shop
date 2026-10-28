@@ -1,0 +1,43 @@
+---
+description: Validation error message conventions for Zod schemas and form fields
+globs: src/**/*.ts,src/**/*.tsx
+alwaysApply: false
+---
+
+# Error Messages
+
+All validation error messages must follow the pattern:
+
+```
+XXX is required.
+```
+
+Rules:
+- Always end with a period `.`
+- Use `"XXX is required."` — not `"Please select a XXX"`, `"XXX is required"` (no dot), or any other phrasing
+- Field name should be capitalized and human-readable (e.g. `"Email"`, `"Quantity"`, `"Shipping address"`)
+
+## Examples
+
+```ts
+// Good
+z.string().min(1, "Email is required.")
+z.number().positive("Quantity is required.")
+{ message: "Shipping address is required." }
+
+// Bad — wrong phrasing
+{ message: "Please select a size" }
+{ message: "Email is required" }  // missing period
+{ message: "Invalid option: expected one of ..." }  // raw Zod default
+```
+
+## Non-Required Errors
+
+For errors that are not about missing values (format errors, range errors), use a short descriptive sentence ending with a period:
+
+```ts
+// Good
+"Invalid email."
+"Quantity must be greater than 0."
+"Postal code is invalid."
+```

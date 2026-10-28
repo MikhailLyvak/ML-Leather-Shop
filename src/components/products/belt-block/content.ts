@@ -25,6 +25,9 @@ export const BELT_CONTENT = {
   imageAlt:
     "Довгий комбінований ремінь 140 см із натуральної шкіри та текстильної стрічки для клатча ML Daily Pouch",
   imageHeight: 642,
+  imageMobileHeight: 314,
+  imageMobileSrc: "/images/belt/belt_mobile.png",
+  imageMobileWidth: 375,
   imageSrc: "/images/belt/belt_pc.png",
   imageWidth: 642,
   sectionId: "belt",

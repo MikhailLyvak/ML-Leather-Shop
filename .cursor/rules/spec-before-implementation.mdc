@@ -1,0 +1,37 @@
+---
+description: Require a written feature spec before implementing product, cart, order, or billing work
+alwaysApply: true
+---
+
+# Spec before implementation
+
+For **new features** (landing, cart, checkout, order, billing, auth), write (or update) a markdown spec **before** writing production code.
+
+## Where
+
+- Path: `docs/specs/<feature-kebab-name>.md`
+- One primary spec per feature (or one shared parent spec with clear sections).
+- Do **not** put brand/SEO source-of-truth docs here — those live at `docs/ML_PROJECT_CONTEXT.md`.
+
+## Minimum contents
+
+1. **Problem / goal** — what success looks like
+2. **Users** — shopper, future admin
+3. **Scope (in / out)**
+4. **UX flow & states** — steps, empty/loading/error; **read** mockups in `docs/design/` (currently `ml-daily-landing-desktop.png`). Figma is upstream only.
+5. **Data model** (if any)
+6. **Server surface** — actions, APIs, session notes
+7. **Reuse** — existing components, layouts, `Form` primitives to extend (not reinvent)
+8. **Acceptance criteria** — testable checklist
+9. **Open questions** — only if blocking; otherwise resolve before coding
+
+## Workflow
+
+1. Create/update the spec and get alignment.
+2. Only then implement against the accepted criteria.
+3. If implementation discovers a material change, **update the spec first**, then the code.
+
+## Do not
+
+- Start UI or server work from a ticket or Figma frame alone when no spec exists.
+- Duplicate a second form stack when `forms.mdc` already defines one.

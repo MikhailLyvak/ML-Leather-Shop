@@ -1,0 +1,66 @@
+---
+description: Testing patterns — colocated tests, fixtures, and action coverage
+globs: src/**/__tests__/**/*.ts,src/**/*.test.ts
+alwaysApply: false
+---
+
+# Testing
+
+Tests live in `__tests__/` folders next to the code they test (or as `*.test.ts` siblings).
+
+## File Layout
+
+```
+src/
+  actions/__tests__/cart.test.ts
+  utils/__tests__/array.test.ts
+```
+
+## Running Tests
+
+When a test runner is configured:
+
+```bash
+npm test
+npm run test:watch
+```
+
+## Mocking Pattern
+
+Mock Next.js cache when actions call it:
+
+```typescript
+jest.mock("next/cache", () => ({ revalidatePath: jest.fn() }))
+```
+
+Prefer mocking module boundaries (actions calling helpers) over implementation details.
+
+## Fixtures
+
+Use small factory functions that return valid objects (Zod-parsed when a schema exists):
+
+```typescript
+function createCartItemFixture(overrides?: Partial<CartItem>): CartItem {
+  return {
+    productSlug: "ml-daily-klatch",
+    quantity: 1,
+    ...overrides,
+  }
+}
+```
+
+## Test Structure
+
+For server actions, cover at least:
+
+1. **Happy path** — valid input
+2. **Invalid input** — Zod validation fails
+3. **Error** — dependency throws or returns failure
+
+```typescript
+describe("addToCart", () => {
+  it("should add an item to the cart", async () => { ... })
+  it("should return error for invalid input", async () => { ... })
+  it("should handle errors gracefully", async () => { ... })
+})
+```

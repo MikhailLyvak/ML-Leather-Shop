@@ -1,10 +1,12 @@
-import Image from "next/image"
+import { getImageProps } from "next/image"
 
 import {
   ML_DAILY_POUCH,
   PRODUCT_COLORS,
   type ProductColorId,
 } from "@/lib/products/ml-daily-pouch"
+
+const HERO_BACKGROUND_MOBILE_MAX_WIDTH_PX = 896
 
 interface HeroSceneProps {
   backgroundAlt: string
@@ -18,24 +20,43 @@ const HeroScene = ({ backgroundAlt, colorId }: HeroSceneProps) => {
     <div className="absolute inset-0 overflow-hidden">
       {PRODUCT_COLORS.map((color) => {
         const isActiveBackground = color.id === colorId
+        const imageClassName = `absolute inset-0 size-full object-cover object-[20%_100%] min-[897px]:object-bottom lg:max-[1519px]:object-bottom-right transition-opacity duration-[1400ms] ease-in-out motion-reduce:transition-none ${
+          isActiveBackground ? "opacity-100" : "opacity-0"
+        }`
+        const {
+          props: { srcSet: mobileSrcSet },
+        } = getImageProps({
+          alt: "",
+          className: imageClassName,
+          fill: true,
+          sizes: "100vw",
+          src: color.backgroundSrcMobile,
+          unoptimized: true,
+        })
+        const { props: desktopImageProps } = getImageProps({
+          alt: isActiveBackground ? backgroundAlt : "",
+          className: imageClassName,
+          fetchPriority:
+            isActiveBackground && isDefaultBackground ? "high" : "auto",
+          fill: true,
+          loading: "eager",
+          sizes: "100vw",
+          src: color.backgroundSrc,
+          unoptimized: true,
+        })
 
         return (
-          <Image
-            alt={isActiveBackground ? backgroundAlt : ""}
-            aria-hidden={!isActiveBackground}
-            className={`object-cover object-bottom lg:max-[1519px]:object-bottom-right transition-opacity duration-[1400ms] ease-in-out motion-reduce:transition-none ${
-              isActiveBackground ? "opacity-100" : "opacity-0"
-            }`}
-            fetchPriority={
-              isActiveBackground && isDefaultBackground ? "high" : "auto"
-            }
-            fill
-            key={color.backgroundSrc}
-            loading="eager"
-            sizes="100vw"
-            src={color.backgroundSrc}
-            unoptimized
-          />
+          <picture key={color.id}>
+            <source
+              media={`(max-width: ${HERO_BACKGROUND_MOBILE_MAX_WIDTH_PX}px)`}
+              srcSet={mobileSrcSet ?? color.backgroundSrcMobile}
+            />
+            <img
+              {...desktopImageProps}
+              alt={isActiveBackground ? backgroundAlt : ""}
+              aria-hidden={!isActiveBackground}
+            />
+          </picture>
         )
       })}
       <div

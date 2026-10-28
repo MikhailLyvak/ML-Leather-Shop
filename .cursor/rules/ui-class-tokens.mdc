@@ -1,0 +1,19 @@
+---
+description: Where to put shared Tailwind / className strings for reusable UI
+globs: src/components/**/*.tsx,src/components/**/*.ts,src/app/**/*.tsx
+alwaysApply: false
+---
+
+# Shared UI class strings (`className`, popover menus, panels)
+
+## Placement
+
+- **Do not** add long Tailwind strings to `*utils.ts` modules that are mainly **business logic** (e.g. form `utils.ts` with Zod only). Keeps logic files free of presentation details.
+- **Do** use a **small sibling module** next to the feature:
+  - Example: `src/components/cart/cart-drawer-classname.ts` for shared drawer/panel class strings.
+  - If only one component family uses it, a file inside that folder (e.g. `dropdown/popover-classname.ts`) is fine.
+- Prefer **one exported constant** per file when the string is long and shared; name with **`SCREAMING_SNAKE_CASE`** (e.g. `CART_DRAWER_PANEL_CLASSNAME`).
+
+## Usage
+
+- Import the constant in leaf components; pass through props (e.g. `className`) where callers may still **override** for special layouts.

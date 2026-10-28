@@ -28,7 +28,7 @@ const GoodCardMeander = () => {
   return (
     <div
       aria-hidden
-      className="@container relative h-[52px] w-full shrink-0 overflow-hidden lg:h-auto lg:w-[52px]"
+      className="@container relative h-8 w-full shrink-0 overflow-hidden lg:h-auto lg:w-[52px]"
     >
       <div
         className="absolute inset-0 bg-cover bg-center lg:hidden"
@@ -54,13 +54,13 @@ const GoodCard = () => {
   return (
     <section
       aria-labelledby={GOOD_CARD_CONTENT.headingId}
-      className="my-30"
+      className="my-10 lg:my-30"
       id={GOOD_CARD_CONTENT.sectionId}
     >
-      <div className="mx-auto max-w-7xl px-5 sm:px-10">
-        <div className="relative overflow-hidden rounded-[28px] bg-[#F4EFE6] shadow-[0_12px_40px_rgba(40,32,24,0.08)]">
+      <div className="mx-auto max-w-7xl px-[15px] sm:px-10">
+        <div className="relative overflow-hidden rounded-[15px] bg-[#F2EFEB] lg:rounded-[28px] lg:bg-[#F4EFE6] lg:shadow-[0_12px_40px_rgba(40,32,24,0.08)]">
           <div className="relative flex flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_52px_minmax(0,1fr)] lg:items-stretch">
-            <div className="relative min-h-[360px] overflow-hidden lg:min-h-[640px]">
+            <div className="relative min-h-[302px] overflow-hidden lg:min-h-[640px]">
               <Image
                 alt=""
                 aria-hidden
@@ -69,51 +69,51 @@ const GoodCard = () => {
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 src={GOOD_CARD_CONTENT.backgroundSrc}
               />
-              <div className="relative z-10 flex h-full min-h-[360px] items-center justify-center px-8 lg:min-h-[640px] lg:px-10">
+              <div className="relative z-10 flex h-full min-h-[302px] items-center justify-center px-[15px] pt-6 lg:min-h-[640px] lg:px-10 lg:pt-0">
                 <HeroProduct
                   aspectRatio="1.55 / 1"
-                  className="mx-0 w-full max-w-none lg:ml-0 lg:mr-0"
+                  className="mx-0 w-full max-w-none max-lg:h-auto max-lg:aspect-(--hero-product-aspect) lg:ml-0 lg:mr-0"
                   colorId={colorId}
                   hasShoulderStrap={false}
                   loading="lazy"
-                  objectClassName="object-cover object-right drop-shadow-[0_18px_24px_rgba(40,32,24,0.28)]"
+                  objectClassName="drop-shadow-[0_18px_24px_rgba(40,32,24,0.28)] lg:object-cover lg:object-right"
                   productAlt={PRODUCT_COLOR_MAP[colorId].alt}
                   sizes="(max-width: 1024px) 90vw, 50vw"
                 />
               </div>
             </div>
             <GoodCardMeander />
-            <div className="flex w-full flex-col items-center justify-center px-8 py-10 sm:px-12 lg:px-8 lg:py-14">
-              <div className="flex w-full max-w-[414px] flex-col">
+            <div className="flex w-full flex-col items-center justify-center p-[15px] sm:px-12 sm:py-10 lg:px-8 lg:py-14">
+              <div className="flex w-full flex-col sm:max-w-[414px]">
                 <h2
-                  className="m-0 font-serif text-[44px] font-bold uppercase leading-none tracking-normal text-[#211E1A] [text-box:trim-both_cap_alphabetic] sm:text-[52px]"
+                  className="m-0 font-serif text-[36px] font-bold uppercase leading-[normal] tracking-normal text-[#211E1A] lg:text-[52px] lg:leading-none lg:[text-box:trim-both_cap_alphabetic]"
                   id={GOOD_CARD_CONTENT.headingId}
                 >
-                  <span className="block">ML Daily</span>
-                  <span className="block">Pouch</span>
+                  <span className="lg:block">ML Daily</span>{" "}
+                  <span className="lg:block">Pouch</span>
                 </h2>
-                <p className="mt-5 m-0 font-gilroy text-base font-normal leading-relaxed text-[#211E1A]">
+                <p className="m-0 mt-[17px] max-w-[309px] font-gilroy text-[14px] font-normal leading-normal text-[#211E1A] lg:mt-5 lg:max-w-none lg:text-base lg:leading-relaxed">
                   {ML_DAILY_POUCH.description}
                 </p>
-                <p className="mt-6 m-0 font-gilroy text-[40px] font-medium leading-none tabular-nums tracking-normal text-cognac [text-box:trim-both_cap_alphabetic] sm:text-5xl">
+                <p className="m-0 mt-[17px] font-gilroy text-[40px] font-medium leading-none tabular-nums tracking-normal text-cognac [text-box:trim-both_cap_alphabetic] lg:mt-6 lg:text-5xl">
                   {formatPriceUah(priceUah)}
                 </p>
-                <div className="mt-8 w-full">
+                <div className="mt-[29px] w-full lg:mt-8">
                   <HeroColorPicker
                     colorId={colorId}
                     onColorChange={onColorChange}
                     variant="panel"
                   />
                 </div>
-                <div className="mt-6 w-full">
+                <div className="mt-[29px] w-full lg:mt-6">
                   <HeroStrapOption
                     hasShoulderStrap={hasShoulderStrap}
                     onShoulderStrapChange={onShoulderStrapChange}
                     variant="plain"
                   />
                 </div>
-                <HeroAddToCartButton className="mt-8 flex h-14 w-full min-[1440px]:h-14 min-[1440px]:w-full" />
-                <p className="mt-4 m-0 text-center font-gilroy text-xs font-normal leading-normal tracking-wide text-[#736B60]">
+                <HeroAddToCartButton className="mt-[29px] flex h-14 w-full max-lg:h-[50px]! max-lg:w-full! lg:mt-8 min-[1440px]:h-14 min-[1440px]:w-full" />
+                <p className="m-0 mt-[13px] lg:mt-4 text-center font-gilroy text-xs font-normal leading-normal tracking-wide text-[#736B60]">
                   {GOOD_CARD_CONTENT.note}
                 </p>
               </div>

@@ -1,0 +1,28 @@
+---
+description: User-bound localStorage keys must use mlStorageKey / ml_ prefix
+globs: src/stores/**/*.ts,src/app/**/store.ts,src/app/providers.tsx
+alwaysApply: false
+---
+
+# Persisted client storage (`ml_*`)
+
+## Prefix
+
+User-bound browser storage (Zustand `persist`, cart, last-user marker, and similar) **must** use keys from `@/stores/ml-storage-key`:
+
+- `ML_STORAGE_KEY_PREFIX` (`ml_`)
+- `mlStorageKey("suffix_v1")` — **never** hardcode `"ml_..."` literals
+
+Device preferences (e.g. color scheme) must **not** use this prefix.
+
+## Logout / user switch
+
+- Intentional **Log out**: `clearMlLocalStorage()` (wipes all `ml_*` localStorage keys), then hard navigation. Do **not** reset every Zustand store in memory — reload drops them.
+- Session expiry / same user re-login: **do not** clear — keep cart when that is the product decision.
+- Different `user.id` on login: compare `mlStorageKey("last_user_id")`, clear `ml_*` if the user changed, then reload.
+
+## New persist store checklist
+
+1. `persist({ name: mlStorageKey("...") })`
+2. Do not invent a one-off localStorage key outside the helper
+3. Do not call `localStorage.clear()` on logout

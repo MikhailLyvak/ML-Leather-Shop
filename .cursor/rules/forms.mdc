@@ -1,0 +1,149 @@
+---
+description: Form patterns — react-hook-form + Zod + shadcn Form
+globs: src/components/**/*.tsx,src/components/**/utils.ts,src/app/**/*.tsx,src/app/**/utils.ts,src/app/**/hooks.ts
+alwaysApply: false
+---
+
+# Forms
+
+Stack: **react-hook-form** + **Zod** + `@hookform/resolvers/zod` + shadcn `<Form>` / `FormField` primitives.
+
+## Scope
+
+The **`globs`** include **`src/app/**/*.tsx`** plus **`src/app/**/hooks.ts`**, **`src/app/**/utils.ts`**, and the same patterns under **`src/components/**`. Follow this document when that file implements **`useForm`**, **`<Form>`** / `FormProvider`, Zod + `@hookform/resolvers/zod`.
+
+Not every file under those globs is a form. Apply these conventions only where this stack is used.
+
+Prefer shared field wrappers (when they exist under `@/components/form/`) inside `<Form {...form}>` so labels, `FormMessage`, and disabled/loading stay consistent. Until those wrappers exist, use shadcn `FormField` + `FormControl`. If a gap is recurring, extract a shared wrapper instead of forking markup.
+
+## Zod (form schemas)
+
+**Zod v4** — use **`z.email()`**, **`z.url()`**, **`z.coerce.*`**; avoid legacy `.string().email()` / `.string().url()` on the chain.
+
+**Prefer built-in methods.** Use `.refine()` only when validation spans multiple fields, needs external logic, or no built-in exists.
+
+### Chain vs `.pipe()` (Zod v4)
+
+- **Chain** on `z.string()` for: `.trim()`, `.min()`, `.max()`, `.regex()`, etc.
+- **`.pipe(schema)`** when chaining into a **top-level** format schema — e.g. `z.string().trim().pipe(z.url("…"))` or `.pipe(z.email("…"))` after transforms.
+- **Do not** use `.pipe()` for `.min()` alone — use `z.string().trim().min(1, "…")`.
+
+User-facing validation messages end with a **period**. See **error-messages**.
+
+### Schema placement and types
+
+- Define schemas in the feature’s **`utils.ts`** (or a colocated `schema.ts` if huge).
+- **Export the schema first**; derive types with `z.infer<typeof myFormSchema>` (not the other way around).
+
+```typescript
+import { z } from "zod"
+
+export const checkoutFormSchema = z.object({
+  email: z.string().trim().toLowerCase().pipe(z.email("Invalid email.")),
+  quantity: z.coerce.number().positive("Quantity is required."),
+})
+
+export type CheckoutFormValues = z.infer<typeof checkoutFormSchema>
+```
+
+Put **all** user-editable fields that belong to the submit payload on the schema.
+
+### Strings — required text (default)
+
+Use `trim()` so whitespace-only input fails and the **parsed** value is normalized:
+
+```typescript
+z.string().trim().min(1, "Name is required.")
+```
+
+**Do not** use `z.string().refine((v) => v.trim().length > 0)` for this — use `.trim().min(1)` instead.
+
+### Strings — optional text (empty or non-empty)
+
+`z.string().optional()` still allows `" "` (spaces only). For “blank or meaningful text” from inputs:
+
+```typescript
+const optionalText = z.union([
+  z.literal(""),
+  z.string().trim().min(1, "Value is required."),
+])
+```
+
+### Emails
+
+```typescript
+z.string().trim().toLowerCase().pipe(z.email("Invalid email."))
+```
+
+### URLs
+
+```typescript
+z.string().trim().pipe(z.url("Invalid URL."))
+```
+
+**Optional URL** (allow `""` from inputs):
+
+```typescript
+const optionalUrl = z.union([
+  z.literal(""),
+  z.string().trim().pipe(z.url("Invalid URL.")),
+])
+```
+
+### Numbers from inputs
+
+Controlled inputs and native `<input type="number">` often submit **strings**. Prefer coercion:
+
+```typescript
+z.coerce.number().min(0)
+z.coerce.number().positive()
+```
+
+Use plain `z.number()` only when the value is already a number.
+
+### Booleans
+
+```typescript
+z.coerce.boolean()
+```
+
+### Enums
+
+Prefer `z.enum([...])` or `z.nativeEnum(MyEnum)` over unconstrained `z.string()` for fixed sets.
+
+### Cross-field validation
+
+```typescript
+z.object({
+  password: z.string().min(8),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match.",
+  path: ["confirmPassword"],
+})
+```
+
+## Hook pattern
+
+Form hooks live in `hooks.ts`:
+
+```typescript
+const form = useForm<CheckoutFormValues>({
+  defaultValues: getDefaultValues(),
+  mode: "onBlur",
+  reValidateMode: "onChange",
+  resolver: zodResolver(checkoutFormSchema),
+})
+```
+
+- **Keep page/modal components thin:** wire `useForm`, Zod resolver, `handleSubmit`, `reset`, and derived UI flags in **`hooks.ts`**.
+- **Name composite hooks** after the feature.
+- **Single `hooks.ts` per feature folder** unless the file grows very large.
+
+## Default values (`getDefaultValues`)
+
+- In the feature’s **`utils.ts`**, expose **`getDefaultValues`**.
+- **Static defaults:** zero-arg factory `(): CheckoutFormValues => ({ ... })`.
+- **Depends on props / loaded entity:** `getDefaultValues(entity)` from **`hooks.ts`**.
+
+Prefer **`export const getDefaultValues = …`** over ad-hoc names for new code.

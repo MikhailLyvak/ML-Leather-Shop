@@ -1,0 +1,41 @@
+---
+description: Core project conventions for the ML Shop Next.js app
+alwaysApply: true
+---
+
+# Project Overview
+
+ML Shop is an online store for handmade leather clutches. Next.js App Router + React + TypeScript + Tailwind v4. Product pages are server-rendered with the Metadata API so they are crawlable.
+
+Landing visual source of truth: `docs/design/ml-daily-landing-desktop.png` (read the PNG). Figma is the designer’s file: [ML Daily Klatch](https://www.figma.com/design/GpU9pIhsIUvGO5DFEyfYb9/ML?node-id=159-30&p=f).
+
+## Folder Structure
+
+```
+src/
+  actions/        # Server actions ("use server"), grouped by domain (cart, order, billing)
+  app/            # App Router: products, cart, order, billing
+  components/     # Feature components + ui/ primitives (shadcn)
+  hooks/          # Shared React hooks
+  lib/            # query-keys, cn()
+  stores/         # Zustand / persisted client storage
+  utils/          # route-href, string/array guards, ActionResponse
+public/
+  images/         # All static images; product shots under images/products/<slug>/
+docs/
+  ML_PROJECT_CONTEXT.md  # Brand, copy, SEO — read before public-page work
+  design/                # Visual mockups (not served); landing PNG is layout source of truth
+  specs/                 # Feature specs before implementation
+```
+
+## Key Conventions
+
+- **Imports**: Use `@/*` path aliases (mapped to `src/*`). When editing or adding code, **replace relative imports** (`../`, `../../`, …) with `@/…` whenever the target lives under `src/` (especially for cross-folder imports). Same-folder **`./`** imports for colocated modules (e.g. `./types`, `./utils`) are fine.
+- **Route paths**: Use constants from `@/utils/route-href` — never hardcode route strings (e.g. `ML_DAILY_KLATCH_HREF`, `CART_HREF`).
+- **Query keys**: Use `queryKeys.*` from `@/lib/query-keys` — never hardcode key arrays.
+- **UI**: Use `components/ui/` primitives with `cn()` for conditional classes.
+- **Feature folders**: Colocate `hooks.ts`, `utils.ts`, `types.ts` alongside components.
+- **Barrel exports**: Feature folders export through `index.ts`.
+- **Images**: Store customer-facing files in `public/images/` and load with `next/image` (e.g. `/images/products/ml-daily-klatch/hero.jpg`). Design mockups live in `docs/design/` and must not be served.
+- **String type checks**: Use **`isString`** from **`@/utils/string`** instead of **`typeof value === "string"`**.
+- **Array emptiness checks**: Use **`isArrayAndHasElements`** / **`isArrayAndEmpty`** from **`@/utils/array`** instead of **`Array.isArray(value) && value.length > 0`** (or `=== 0`).

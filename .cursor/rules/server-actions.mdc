@@ -1,0 +1,50 @@
+---
+description: Server action patterns — ActionResponse, route constants, tests
+globs: src/actions/**/*.ts
+alwaysApply: false
+---
+
+# Server Actions
+
+Every action file starts with `"use server"`.
+
+## Response Type
+
+Always return `ActionResponse<T>` from `@/utils/action-response/types`:
+
+```typescript
+// Success
+return { data: result, success: true }
+
+// Error
+return { error: "Something went wrong.", success: false }
+```
+
+Do not throw for expected failures (validation, missing cart, unpaid order). Return `{ error, success: false }` and optionally `errorCode` for client handling.
+
+## Route Paths
+
+Never hardcode route strings. Use constants from `@/utils/route-href`:
+
+```typescript
+import { CART_HREF, ML_DAILY_KLATCH_HREF } from "@/utils/route-href"
+
+revalidatePath(CART_HREF)
+redirect(ML_DAILY_KLATCH_HREF)
+```
+
+## Cache Invalidation
+
+Use `revalidatePath()` for Next.js route cache. TanStack Query updates belong in client code (see **query-keys**: prefer `invalidateQueries` after mutations; use `refetchQueries` only when you need an immediate forced refetch).
+
+```typescript
+import { revalidatePath } from "next/cache"
+
+import { CART_HREF } from "@/utils/route-href"
+
+revalidatePath(CART_HREF)
+```
+
+## Tests
+
+Every new or modified server action must have tests in `src/actions/__tests__/` (or a colocated `__tests__/` folder). See **testing**. At minimum cover: happy path, invalid input, and action/service error.
